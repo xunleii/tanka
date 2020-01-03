@@ -42,7 +42,8 @@ func DiffStr(name, is, should string) (string, error) {
 	buf := bytes.Buffer{}
 	merged := filepath.Join(dir, "MERGED-"+name)
 	live := filepath.Join(dir, "LIVE-"+name)
-	cmd := exec.Command("icdiff", "-r", live, merged)
+	cols := strings.Join([]string{"--cols=", terminal_width()}, "")
+	cmd := exec.Command("icdiff", "-r", cols, live, merged)
 	cmd.Stdout = &buf
 	err = cmd.Run()
 
@@ -88,4 +89,14 @@ func (r FilteredErr) Write(p []byte) (n int, err error) {
 		}
 	}
 	return os.Stderr.Write(p)
+}
+
+func terminal_width() string {
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		return "80"
+	}
+	return strings.Split(string(out), " ")[1]
 }
