@@ -42,7 +42,7 @@ func DiffStr(name, is, should string) (string, error) {
 	buf := bytes.Buffer{}
 	merged := filepath.Join(dir, "MERGED-"+name)
 	live := filepath.Join(dir, "LIVE-"+name)
-	cmd := exec.Command("diff", "-u", "-N", live, merged)
+	cmd := exec.Command("icdiff", "-r", live, merged)
 	cmd.Stdout = &buf
 	err = cmd.Run()
 
@@ -55,7 +55,7 @@ func DiffStr(name, is, should string) (string, error) {
 
 	out := buf.String()
 	if out != "" {
-		out = fmt.Sprintf("diff -u -N %s %s\n%s", live, merged, out)
+		out = fmt.Sprintf("icdiff -r %s %s\n%s", live, merged, out)
 	}
 
 	return out, nil

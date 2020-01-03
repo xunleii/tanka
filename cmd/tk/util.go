@@ -1,16 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/alecthomas/chroma/quick"
 )
 
 // pageln invokes the systems pager with the supplied data
@@ -43,14 +39,6 @@ func pageln(i ...interface{}) {
 	if err := cmd.Run(); err != nil {
 		fmt.Print(i...)
 	}
-}
-
-func highlight(lang, s string) string {
-	var buf bytes.Buffer
-	if err := quick.Highlight(&buf, s, lang, "terminal", "vim"); err != nil {
-		log.Fatalln("Highlighting:", err)
-	}
-	return buf.String()
 }
 
 // writeJSON writes the given object to the path as a JSON file
