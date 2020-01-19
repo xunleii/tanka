@@ -4,11 +4,12 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	jsonnet "github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet"
 	"github.com/pkg/errors"
 
 	"github.com/grafana/tanka/pkg/jsonnet/jpath"
 	"github.com/grafana/tanka/pkg/jsonnet/native"
+	"github.com/grafana/tanka/pkg/tanka/plugins"
 )
 
 // Modifiers allow to set optional paramters on the Jsonnet VM.
@@ -52,6 +53,22 @@ func Evaluate(sonnet string, jpath []string, mods ...Modifier) (string, error) {
 func WithExtCode(key, code string) Modifier {
 	return func(vm *jsonnet.VM) error {
 		vm.ExtCode(key, code)
+		return nil
+	}
+}
+
+// WithPlugin allows to import custom Jsonnet native functions in order to
+// extend Tanka.
+func WithPlugin(path string) Modifier {
+	return func(vm *jsonnet.VM) error {
+		funcs, err := plugins.ImportPlugin(path)
+		if err != nil {
+			return err
+		}
+
+		for _, nf := range funcs {
+			vm.NativeFunction(nf)
+		}
 		return nil
 	}
 }

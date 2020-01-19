@@ -111,9 +111,15 @@ func evalJsonnet(path string, env *v1alpha1.Config) (map[string]interface{}, err
 		return nil, errors.Wrap(err, "marshalling environment config")
 	}
 
+	var mods []jsonnet.Modifier
+	mods = append(mods, jsonnet.WithExtCode(spec.APIGroup+"/environment", string(jsonEnv)))
+	for _, plugin := range env.Spec.Plugins {
+		mods = append(mods, jsonnet.WithPlugin(plugin))
+	}
+
 	raw, err := jsonnet.EvaluateFile(
 		filepath.Join(baseDir, "main.jsonnet"),
-		jsonnet.WithExtCode(spec.APIGroup+"/environment", string(jsonEnv)),
+		mods...
 	)
 	if err != nil {
 		return nil, err

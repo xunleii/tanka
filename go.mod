@@ -9,6 +9,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/google/go-jsonnet v0.14.1-0.20191006203837-42cb19ef24fb
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/magiconair/properties v1.8.0
 	github.com/pkg/errors v0.8.1
 	github.com/posener/complete v1.2.1
 	github.com/spf13/cobra v0.0.5
